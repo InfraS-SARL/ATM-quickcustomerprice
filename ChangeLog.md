@@ -3,6 +3,7 @@
 ## Unreleased
 
 ## Release 3.8
+- FIX : PR96 - EXTERNE - Change getAllPrevProgress following dolibarr version - *12/02/2026* - 3.8.13
 - FIX : Compat V23 - *23/12/2025* - 3.8.12
 - FIX : T6251 - Fix edit extrafields on proposal lines - *17/12/2025* - 3.8.11
 - FIX: DA027130 - Fix margin rate on price update and remove location.reload() to prevent duplicate line additions. - *13/10/2025* - 3.8.10
