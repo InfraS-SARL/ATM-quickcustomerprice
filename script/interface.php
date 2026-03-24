@@ -158,10 +158,11 @@ function _updateObjectLine($objectid, $objectelement, $lineid, $column, $value)
 			if (empty($error)) {
 				if ($remise_percent === 'Offert') $remise_percent = 100;
 				if (strpos($situation_cycle_ref, '%') !== false) $situation_cycle_ref = substr($situation_cycle_ref, 0, -1); // Do not keep the '%'
+				$situation_cycle_ref = (float)($situation_cycle_ref ?? 0); // Ensure float type
 
 				// we need all the previous progress to calculate the new progress (actual progress - cumulate progress)
 				$prevProgress = ((floatval(DOL_VERSION) >= 21) ? $line->getAllPrevProgress($objectid, true) : $line->get_prev_progress($objectid, true));
-				$actualProgress = $situation_cycle_ref - $prevProgress;
+				$actualProgress = ((float)($situation_cycle_ref ?? 0)) - ((float)($prevProgress ?? 0));
 
 				// Logging pour diagnostic
 				dol_syslog("QCP::updateline facture - lineid=$lineid, column=$column, value=$value, situation_cycle_ref=$situation_cycle_ref, prevProgress=$prevProgress, actualProgress=$actualProgress", LOG_DEBUG);
