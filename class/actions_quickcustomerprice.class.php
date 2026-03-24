@@ -265,11 +265,24 @@ class Actionsquickcustomerprice extends quickcustomerprice\RetroCompatCommonHook
                                         }
                                         $('tr[id=row-' + lineid + '] td.linecoluht a').html(data.price);
                                         $('tr[id=row-' + lineid + '] td.linecoluht a').attr('value', data.price);
-                                        if (<?php echo getDolGlobalInt('INVOICE_USE_SITUATION')?> == 2) {
-                                            $('tr[id=row-' + lineid + '] td.linecolcycleref').find('a').html(data.situation_cycle_ref + '%');
+
+                                        // Mise à jour robuste du situation_cycle_ref (compatible produits et services)
+                                        const $cycleCell = $('tr[id=row-' + lineid + '] td.linecolcycleref');
+
+                                        const $cycleLink = $cycleCell.find('a');
+                                        console.log('DEBUG QCP - $cycleLink found:', $cycleLink.length);
+
+                                        if ($cycleLink.length > 0) {
+                                            // Si un lien existe, le mettre à jour
+                                            $cycleLink.html(data.situation_cycle_ref + '%');
+                                            $cycleLink.attr('value', data.situation_cycle_ref);
+                                            console.log('DEBUG QCP - Updated link, HTML after:', $cycleCell.html());
                                         } else {
-                                            $('tr[id=row-' + lineid + '] td.linecolcycleref a').html(data.situation_cycle_ref + '%');
+                                            // Sinon, mettre à jour directement la cellule
+                                            $cycleCell.html(data.situation_cycle_ref + '%');
+                                            console.log('DEBUG QCP - Updated cell directly, HTML after:', $cycleCell.html());
                                         }
+
                                         $('tr[id=row-' + lineid + '] td.linecoluttc').html(data.uttc);
                                         $link.attr('value', data[col]);
 

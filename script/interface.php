@@ -151,7 +151,8 @@ function _updateObjectLine($objectid, $objectelement, $lineid, $column, $value)
 			}
 
 			//TODO Refacto
-			if (! empty($line->fk_product) && isset($type) && $type != Facture::TYPE_CREDIT_NOTE) {
+			// Vérification du prix minimum uniquement pour les produits (product_type = 0), pas pour les services (product_type = 1)
+			if (! empty($line->fk_product) && $line->product_type == 0 && isset($type) && $type != Facture::TYPE_CREDIT_NOTE) {
 				$error = checkPriceMin($o, $line, $price);
 			}
 			if (empty($error)) {
@@ -159,13 +160,22 @@ function _updateObjectLine($objectid, $objectelement, $lineid, $column, $value)
 				if (strpos($situation_cycle_ref, '%') !== false) $situation_cycle_ref = substr($situation_cycle_ref, 0, -1); // Do not keep the '%'
 
 				// we need all the previous progress to calculate the new progress (actual progress - cumulate progress)
-				$actualProgress = $situation_cycle_ref - ((floatval(DOL_VERSION) >= 21) ? $line->getAllPrevProgress($objectid, true) : $line->get_prev_progress($objectid, true));
+				$prevProgress = ((floatval(DOL_VERSION) >= 21) ? $line->getAllPrevProgress($objectid, true) : $line->get_prev_progress($objectid, true));
+				$actualProgress = $situation_cycle_ref - $prevProgress;
+
+				// Logging pour diagnostic
+				dol_syslog("QCP::updateline facture - lineid=$lineid, column=$column, value=$value, situation_cycle_ref=$situation_cycle_ref, prevProgress=$prevProgress, actualProgress=$actualProgress", LOG_DEBUG);
 
 				handleMulticurrencyPrices($o, $line, $price, $pu_ht_devise);
 
 				$res = $o->updateline($lineid, $line->desc, $price, $qty, $remise_percent, $line->date_start, $line->date_end, $line->tva_tx, $line->localtax1_tx, $line->localtax2_tx,
 					 'HT', $line->info_bits, $line->product_type, $line->fk_parent_line, 0, $line->fk_fournprice, $pa_ht, $line->label, $line->special_code,
 					 $line->array_options, $actualProgress, $line->fk_unit, $pu_ht_devise);
+
+				if ($res < 0) {
+					dol_syslog("QCP::updateline facture FAILED - lineid=$lineid, error: " . $o->error . " errors: " . implode(', ', $o->errors ?? []), LOG_ERR);
+				}
+
 				$total_ht = $o->line->total_ht;
 				$multicurrency_total_ht = $o->line->multicurrency_total_ht;
 				$uttc = $o->line->subprice + ($o->line->subprice * $o->line->tva_tx) / 100;
