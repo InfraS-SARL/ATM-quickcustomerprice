@@ -3,6 +3,10 @@
 ## Unreleased
 
 ## Release 3.8
+- FIX : Cumulative progress not saved for services on situation invoices - *23/03/2026* - 3.8.14
+    + Fixed checkPriceMin() verification being applied to services (product_type=1) when it should only apply to products (product_type=0)
+    + Improved jQuery selector for situation_cycle_ref display to handle both products and services
+    + Added debug logging for troubleshooting
 - FIX : PR96 - EXTERNE - Change getAllPrevProgress following dolibarr version - *12/02/2026* - 3.8.13
 - FIX : Compat V23 - *23/12/2025* - 3.8.12
 - FIX : T6251 - Fix edit extrafields on proposal lines - *17/12/2025* - 3.8.11

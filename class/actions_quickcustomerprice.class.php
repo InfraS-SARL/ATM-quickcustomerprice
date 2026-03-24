@@ -265,11 +265,18 @@ class Actionsquickcustomerprice extends quickcustomerprice\RetroCompatCommonHook
                                         }
                                         $('tr[id=row-' + lineid + '] td.linecoluht a').html(data.price);
                                         $('tr[id=row-' + lineid + '] td.linecoluht a').attr('value', data.price);
-                                        if (<?php echo getDolGlobalInt('INVOICE_USE_SITUATION')?> == 2) {
-                                            $('tr[id=row-' + lineid + '] td.linecolcycleref').find('a').html(data.situation_cycle_ref + '%');
+
+                                        // Mise à jour du situation_cycle_ref % d'avancement de la facture de situation (compatible produits et services)
+                                        const $cycleCell = $('tr[id=row-' + lineid + '] td.linecolcycleref');
+                                        const $cycleLink = $cycleCell.find('a');
+
+                                        if ($cycleLink.length > 0) {
+                                            $cycleLink.html(data.situation_cycle_ref + '%');
+                                            $cycleLink.attr('value', data.situation_cycle_ref);
                                         } else {
-                                            $('tr[id=row-' + lineid + '] td.linecolcycleref a').html(data.situation_cycle_ref + '%');
+                                            $cycleCell.html(data.situation_cycle_ref + '%');
                                         }
+
                                         $('tr[id=row-' + lineid + '] td.linecoluttc').html(data.uttc);
                                         $link.attr('value', data[col]);
 
