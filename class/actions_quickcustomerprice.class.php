@@ -266,7 +266,7 @@ class Actionsquickcustomerprice extends quickcustomerprice\RetroCompatCommonHook
                                         $('tr[id=row-' + lineid + '] td.linecoluht a').html(data.price);
                                         $('tr[id=row-' + lineid + '] td.linecoluht a').attr('value', data.price);
 
-                                        // Mise à jour robuste du situation_cycle_ref % d'avancement de la facture de situation (compatible produits et services)
+                                        // Mise à jour du situation_cycle_ref % d'avancement de la facture de situation (compatible produits et services)
                                         const $cycleCell = $('tr[id=row-' + lineid + '] td.linecolcycleref');
                                         const $cycleLink = $cycleCell.find('a');
 
